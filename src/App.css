@@ -130,50 +130,23 @@
   pointer-events: none;
 }
 
-.card-edge {
+.card-edge-layer {
   position: absolute;
+  inset: 0;
+  border: 1px solid rgb(212 175 101 / 42%);
+  border-radius: 18px;
   background:
     linear-gradient(
-      90deg,
-      #6f501f,
-      #d4af65 24%,
-      #8d692c 52%,
-      #f3dfa3 76%,
-      #654718
+      135deg,
+      #5d4116,
+      #b78d43 28%,
+      #70501f 55%,
+      #d4af65 78%,
+      #4b3412
     );
-  box-shadow: inset 0 0 5px rgb(0 0 0 / 55%);
-}
-
-.card-edge-top,
-.card-edge-bottom {
-  left: 12px;
-  width: calc(100% - 24px);
-  height: var(--card-thickness);
-  transform: rotateX(90deg);
-}
-
-.card-edge-top {
-  top: calc(0px - var(--card-half-thickness));
-}
-
-.card-edge-bottom {
-  bottom: calc(0px - var(--card-half-thickness));
-}
-
-.card-edge-left,
-.card-edge-right {
-  top: 12px;
-  width: var(--card-thickness);
-  height: calc(100% - 24px);
-  transform: rotateY(90deg);
-}
-
-.card-edge-left {
-  left: calc(0px - var(--card-half-thickness));
-}
-
-.card-edge-right {
-  right: calc(0px - var(--card-half-thickness));
+  box-shadow:
+    inset 0 0 7px rgb(0 0 0 / 58%),
+    inset 0 0 2px rgb(243 223 163 / 32%);
 }
 
 .card-label {
