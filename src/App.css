@@ -87,7 +87,7 @@
   mix-blend-mode: screen;
 }
 
-.card-face > :not(.card-shine) {
+.card-face > :not(.card-shine, .card-number) {
   position: relative;
   z-index: 1;
 }
@@ -121,16 +121,17 @@
 }
 
 .card-label {
-  margin-bottom: 4px;
-  font-size: 12px;
-  letter-spacing: 0.45em;
+  margin-bottom: 6px;
+  font-size: 14px;
+  letter-spacing: 0.36em;
   color: #d4af65;
 }
 
 .card-face h1 {
   margin: 0;
-  font-size: clamp(28px, 8vw, 42px);
-  letter-spacing: 0.18em;
+  font-family: "Yuji Syuku", "Yu Mincho", serif;
+  font-size: clamp(34px, 9vw, 48px);
+  letter-spacing: 0.14em;
   color: #f3dfa3;
   text-shadow: 0 1px 10px rgb(212 175 101 / 18%);
 }
@@ -176,6 +177,7 @@
 .card-face .stamp-progress {
   margin-top: 24px;
   color: #d4af65;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.14em;
 }
@@ -183,16 +185,16 @@
 .card-face .stamp-remaining {
   margin-top: 4px;
   color: rgb(243 223 163 / 62%);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.08em;
 }
 
-.card-number {
+.card-face > .card-number {
   position: absolute;
   top: 28px;
-  right: 30px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  left: 30px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
   color: rgb(212 175 101 / 70%);
 }
 
@@ -210,14 +212,14 @@
 
 .card-back-title span {
   margin-bottom: 5px;
-  font-size: 11px;
-  letter-spacing: 0.45em;
+  font-size: 13px;
+  letter-spacing: 0.36em;
   color: rgb(212 175 101 / 75%);
 }
 
 .card-back-title strong {
-  font-family: serif;
-  font-size: 34px;
+  font-family: "Yuji Syuku", "Yu Mincho", serif;
+  font-size: 40px;
   font-weight: 500;
   letter-spacing: 0.2em;
 }
@@ -225,7 +227,7 @@
 .card-details {
   width: 100%;
   margin: 28px 0 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .card-details div {
@@ -256,8 +258,8 @@
   margin-top: 24px;
   border: 3px double #b7352d;
   color: #d95a4f;
-  font-family: serif;
-  font-size: 14px;
+  font-family: "Yuji Syuku", "Yu Mincho", serif;
+  font-size: 16px;
   line-height: 1.15;
   letter-spacing: 0.16em;
   transform: rotate(-4deg);
@@ -270,6 +272,6 @@
 .card-face .card-reward {
   margin-top: 16px;
   color: rgb(243 223 163 / 70%);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.15em;
 }
