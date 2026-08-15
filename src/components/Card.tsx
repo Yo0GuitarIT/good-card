@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import type { CardData } from "../types/card";
 import CardBack from "./CardBack";
 import CardEdges from "./CardEdges";
@@ -8,9 +9,42 @@ type CardProps = {
   data: CardData;
 };
 
+type CardStyle = CSSProperties & {
+  "--completion-delay"?: string;
+};
+
 const gestureHintStorageKey = "good-card:gesture-hint-seen";
 
+function getNewStampFromIndex(data: CardData) {
+  const currentStampCount = data.stamps.length;
+  const storageKey = `good-card:${data.id}:last-seen-stamp-count`;
+  let lastSeenStampCount = Math.max(currentStampCount - 1, 0);
+
+  try {
+    const savedStampCount = localStorage.getItem(storageKey);
+
+    if (savedStampCount !== null) {
+      lastSeenStampCount = Number(savedStampCount);
+    }
+  } catch {
+    // The latest stamp can still animate when storage is unavailable.
+  }
+
+  if (
+    !Number.isFinite(lastSeenStampCount) ||
+    lastSeenStampCount < 0 ||
+    lastSeenStampCount > currentStampCount
+  ) {
+    return null;
+  }
+
+  return currentStampCount > lastSeenStampCount ? lastSeenStampCount : null;
+}
+
 function Card({ data }: CardProps) {
+  const [newStampFromIndex, setNewStampFromIndex] = useState<number | null>(() =>
+    getNewStampFromIndex(data),
+  );
   const [showGestureHint, setShowGestureHint] = useState(() => {
     try {
       return localStorage.getItem(gestureHintStorageKey) !== "true";
@@ -36,6 +70,72 @@ function Card({ data }: CardProps) {
     to: number;
     startedAt: number;
   } | null>(null);
+  const currentStampCount = data.stamps.length;
+  const newStampCount =
+    newStampFromIndex === null ? 0 : currentStampCount - newStampFromIndex;
+  const isCompleting =
+    newStampFromIndex !== null && currentStampCount === data.totalStamps;
+  const completionDelay = 2700 + Math.max(newStampCount - 1, 0) * 180;
+  const cardStyle: CardStyle = {
+    "--completion-delay": `${completionDelay}ms`,
+  };
+
+  useEffect(() => {
+    const storageKey = `good-card:${data.id}:last-seen-stamp-count`;
+
+    if (newStampFromIndex === null) {
+      try {
+        localStorage.setItem(storageKey, String(currentStampCount));
+      } catch {
+        // The card remains usable without persistent viewing history.
+      }
+
+      return;
+    }
+
+    const isNewCompletion = currentStampCount === data.totalStamps;
+    const animationDuration = isNewCompletion
+      ? completionDelay + 2300
+      : 2800 + (newStampCount - 1) * 180;
+    const completionFlipTimer = isNewCompletion
+      ? window.setTimeout(() => {
+          if (hasInteractedRef.current || isDraggingRef.current) return;
+
+          hasInteractedRef.current = true;
+          velocityXRef.current = 0;
+          velocityYRef.current = 0;
+          flipAnimationRef.current = {
+            from: rotationYRef.current,
+            to: rotationYRef.current + 180,
+            startedAt: performance.now(),
+          };
+        }, completionDelay + 1300)
+      : null;
+    const animationTimer = window.setTimeout(() => {
+      setNewStampFromIndex(null);
+
+      try {
+        localStorage.setItem(storageKey, String(currentStampCount));
+      } catch {
+        // The animation may replay next time when storage is unavailable.
+      }
+    }, animationDuration);
+
+    return () => {
+      window.clearTimeout(animationTimer);
+
+      if (completionFlipTimer !== null) {
+        window.clearTimeout(completionFlipTimer);
+      }
+    };
+  }, [
+    completionDelay,
+    currentStampCount,
+    data.id,
+    data.totalStamps,
+    newStampCount,
+    newStampFromIndex,
+  ]);
 
   const startFlip = () => {
     velocityXRef.current = 0;
@@ -231,8 +331,9 @@ function Card({ data }: CardProps) {
   return (
     <section className="scene" aria-label="3D card">
       <div
-        className="card"
+        className={`card ${isCompleting ? "card-completing" : ""}`}
         ref={cardRef}
+        style={cardStyle}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -242,7 +343,11 @@ function Card({ data }: CardProps) {
         tabIndex={0}
         aria-label="カードを裏返す"
       >
-        <CardFront data={data} />
+        <CardFront
+          data={data}
+          newStampFromIndex={newStampFromIndex}
+          isCompleting={isCompleting}
+        />
         <CardBack data={data} />
         <CardEdges />
       </div>

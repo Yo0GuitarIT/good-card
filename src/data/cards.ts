@@ -16,6 +16,9 @@ export const cardData: CardData = {
     { id: "stamp-005", awardedAt: "2026-08-09T14:45:00+08:00" },
     { id: "stamp-006", awardedAt: "2026-08-12T21:10:00+08:00" },
     { id: "stamp-007", awardedAt: "2026-08-15T17:30:00+08:00" },
+    { id: "stamp-008", awardedAt: "2026-08-18T16:20:00+08:00" },
+    { id: "stamp-009", awardedAt: "2026-08-20T13:50:00+08:00" },
+    { id: "stamp-010", awardedAt: "2026-08-22T11:20:00+08:00" }
   ],
   themeId: "black-gold",
   createdAt: "2026-08-01T12:00:00+08:00",
