@@ -1,9 +1,14 @@
 import { useEffect, useRef } from "react";
+import type { CardData } from "../types/card";
 import CardBack from "./CardBack";
 import CardEdges from "./CardEdges";
 import CardFront from "./CardFront";
 
-function Card() {
+type CardProps = {
+  data: CardData;
+};
+
+function Card({ data }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const rotationYRef = useRef(0);
   const rotationXRef = useRef(-8);
@@ -87,8 +92,8 @@ function Card() {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
       >
-        <CardFront />
-        <CardBack />
+        <CardFront data={data} />
+        <CardBack data={data} />
         <CardEdges />
       </div>
     </section>

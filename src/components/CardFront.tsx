@@ -1,14 +1,30 @@
+import type { CardData } from "../types/card";
+import { formatJapaneseNumber } from "../utils/formatJapaneseNumber";
 import StampGrid from "./StampGrid";
 
-function CardFront() {
+type CardFrontProps = {
+  data: CardData;
+};
+
+function CardFront({ data }: CardFrontProps) {
+  const stampCount = data.stamps.length;
+  const remainingStamps = Math.max(data.totalStamps - stampCount, 0);
+
   return (
     <article className="card-face card-front">
       <div className="card-shine" aria-hidden="true" />
-      <span className="card-label">御褒美</span>
-      <h1>集印帳</h1>
-      <StampGrid stampCount={7} totalStamps={10} />
-      <p className="stamp-progress">七印／十印</p>
-      <p className="stamp-remaining">満願まで あと三印</p>
+      <span className="card-label">{data.label}</span>
+      <h1>{data.title}</h1>
+      <StampGrid stampCount={stampCount} totalStamps={data.totalStamps} />
+      <p className="stamp-progress">
+        {formatJapaneseNumber(stampCount)}印／
+        {formatJapaneseNumber(data.totalStamps)}印
+      </p>
+      <p className="stamp-remaining">
+        {remainingStamps === 0
+          ? "満願成就"
+          : `満願まで あと${formatJapaneseNumber(remainingStamps)}印`}
+      </p>
     </article>
   );
 }

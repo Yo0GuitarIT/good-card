@@ -297,10 +297,3 @@
 .completion-seal span {
   display: block;
 }
-
-.card-face .card-reward {
-  margin-top: 16px;
-  color: rgb(243 223 163 / 70%);
-  font-size: 13px;
-  letter-spacing: 0.15em;
-}
