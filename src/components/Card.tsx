@@ -53,6 +53,9 @@ function Card({ data }: CardProps) {
     }
   });
   const cardRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotionRef = useRef(
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const rotationYRef = useRef(0);
   const rotationXRef = useRef(-8);
   const isDraggingRef = useRef(false);
@@ -81,6 +84,24 @@ function Card({ data }: CardProps) {
   };
 
   useEffect(() => {
+    const motionPreference = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const handleMotionPreferenceChange = (event: MediaQueryListEvent) => {
+      prefersReducedMotionRef.current = event.matches;
+    };
+
+    motionPreference.addEventListener("change", handleMotionPreferenceChange);
+
+    return () => {
+      motionPreference.removeEventListener(
+        "change",
+        handleMotionPreferenceChange,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     const storageKey = `good-card:${data.id}:last-seen-stamp-count`;
 
     if (newStampFromIndex === null) {
@@ -99,7 +120,13 @@ function Card({ data }: CardProps) {
       : 2800 + (newStampCount - 1) * 180;
     const completionFlipTimer = isNewCompletion
       ? window.setTimeout(() => {
-          if (hasInteractedRef.current || isDraggingRef.current) return;
+          if (
+            hasInteractedRef.current ||
+            isDraggingRef.current ||
+            prefersReducedMotionRef.current
+          ) {
+            return;
+          }
 
           hasInteractedRef.current = true;
           velocityXRef.current = 0;
@@ -261,7 +288,18 @@ function Card({ data }: CardProps) {
       previousFrameTime = currentTime;
       const flipAnimation = flipAnimationRef.current;
 
-      if (!isDraggingRef.current && flipAnimation) {
+      if (prefersReducedMotionRef.current) {
+        velocityXRef.current = 0;
+        velocityYRef.current = 0;
+
+        if (flipAnimation) {
+          rotationYRef.current = flipAnimation.to;
+          flipAnimationRef.current = null;
+        } else if (!hasInteractedRef.current) {
+          rotationYRef.current = 0;
+          rotationXRef.current = -8;
+        }
+      } else if (!isDraggingRef.current && flipAnimation) {
         const flipProgress = Math.min(
           (currentTime - flipAnimation.startedAt) / flipDuration,
           1,
@@ -320,12 +358,32 @@ function Card({ data }: CardProps) {
         }
       }
 
+      if (!document.hidden) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    const startAnimation = () => {
+      previousFrameTime = performance.now();
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrameId);
+        return;
+      }
 
-    return () => cancelAnimationFrame(animationFrameId);
+      startAnimation();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    startAnimation();
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (

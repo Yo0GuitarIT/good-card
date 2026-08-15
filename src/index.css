@@ -16,12 +16,14 @@
 
 html {
   background: #05050b;
+  overscroll-behavior: none;
 }
 
 body {
   min-width: 320px;
   min-height: 100svh;
   margin: 0;
+  overscroll-behavior: none;
 }
 
 button,

@@ -2,6 +2,11 @@
   min-height: 100svh;
   display: grid;
   place-items: center;
+  padding:
+    max(32px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(64px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 38%, rgb(185 144 67 / 16%), transparent 32%),
@@ -11,7 +16,7 @@
 
 .scene {
   position: relative;
-  width: min(72vw, 320px);
+  width: min(72vw, calc((100svh - 128px) * 2 / 3), 320px);
   aspect-ratio: 2 / 3;
   perspective: 1000px;
   animation: reveal-card 900ms ease-out both;
@@ -494,4 +499,163 @@
 
 .completion-seal span {
   display: block;
+}
+
+@media (max-height: 560px) {
+  .App {
+    padding-block: 20px 44px;
+  }
+
+  .scene {
+    width: min(48vw, calc((100svh - 72px) * 2 / 3), 280px);
+  }
+
+  .gesture-hint {
+    top: calc(100% + 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .stamp-new,
+  .stamp-new span,
+  .card-completing .completion-celebration,
+  .card-completing .stamp-collected,
+  .card-completing .completion-seal {
+    animation: none;
+  }
+
+  .scene {
+    opacity: 1;
+    filter: none;
+  }
+
+  .stamp-new {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .stamp-new span {
+    opacity: 1;
+  }
+
+  .stamp-new::after,
+  .completion-celebration {
+    display: none;
+  }
+
+  .gesture-hint,
+  .gesture-hint-visible {
+    transition: none;
+    transition-delay: 0ms;
+  }
+}
+
+.card-status,
+.card-error {
+  width: min(72vw, calc((100svh - 128px) * 2 / 3), 320px);
+  text-align: center;
+}
+
+.card-status > p,
+.card-error > p {
+  margin: 20px 0 0;
+  color: rgb(243 223 163 / 62%);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.card-skeleton {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px;
+  border: 1px solid rgb(212 175 101 / 28%);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #171612, #080808);
+  box-shadow: 0 30px 70px rgb(0 0 0 / 48%);
+  animation: skeleton-breathe 1600ms ease-in-out infinite;
+}
+
+.card-skeleton-title {
+  width: 55%;
+  height: 28px;
+  margin: 0 auto 34px;
+  border-radius: 3px;
+  background: rgb(212 175 101 / 16%);
+}
+
+.card-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px 8px;
+}
+
+.card-skeleton-grid span {
+  aspect-ratio: 1;
+  border: 1px dashed rgb(212 175 101 / 20%);
+  border-radius: 50%;
+  background: rgb(212 175 101 / 5%);
+}
+
+@keyframes skeleton-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.card-error {
+  padding: 40px 28px;
+  border: 1px solid rgb(212 175 101 / 30%);
+  border-radius: 18px;
+  background: rgb(10 10 9 / 72%);
+}
+
+.card-error-seal {
+  width: 58px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 24px;
+  border: 3px double #b7352d;
+  color: #d95a4f;
+  font-family: "Yuji Syuku", "Yu Mincho", serif;
+  font-size: 28px;
+  transform: rotate(-4deg);
+}
+
+.card-error h1 {
+  margin: 0;
+  color: #f3dfa3;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.card-error button {
+  margin-top: 28px;
+  padding: 10px 18px;
+  border: 1px solid rgb(212 175 101 / 48%);
+  border-radius: 999px;
+  background: rgb(212 175 101 / 8%);
+  color: #f3dfa3;
+  cursor: pointer;
+}
+
+.card-error button:focus-visible {
+  outline: 2px solid #d4af65;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-skeleton {
+    animation: none;
+  }
 }
