@@ -13,6 +13,19 @@
   width: min(72vw, 320px);
   aspect-ratio: 2 / 3;
   perspective: 1000px;
+  animation: reveal-card 900ms ease-out both;
+}
+
+@keyframes reveal-card {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 .card {
@@ -33,6 +46,11 @@
 
 .card:active {
   cursor: grabbing;
+}
+
+.card:focus-visible {
+  outline: 2px solid #d4af65;
+  outline-offset: 8px;
 }
 
 .card-face {
