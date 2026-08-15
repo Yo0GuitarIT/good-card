@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CardData } from "../types/card";
 import CardBack from "./CardBack";
 import CardEdges from "./CardEdges";
@@ -8,7 +8,16 @@ type CardProps = {
   data: CardData;
 };
 
+const gestureHintStorageKey = "good-card:gesture-hint-seen";
+
 function Card({ data }: CardProps) {
+  const [showGestureHint, setShowGestureHint] = useState(() => {
+    try {
+      return localStorage.getItem(gestureHintStorageKey) !== "true";
+    } catch {
+      return true;
+    }
+  });
   const cardRef = useRef<HTMLDivElement>(null);
   const rotationYRef = useRef(0);
   const rotationXRef = useRef(-8);
@@ -38,6 +47,18 @@ function Card({ data }: CardProps) {
     };
   };
 
+  const dismissGestureHint = () => {
+    if (!showGestureHint) return;
+
+    setShowGestureHint(false);
+
+    try {
+      localStorage.setItem(gestureHintStorageKey, "true");
+    } catch {
+      // The hint can still disappear for this session when storage is unavailable.
+    }
+  };
+
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = true;
     hasInteractedRef.current = true;
@@ -63,7 +84,10 @@ function Card({ data }: CardProps) {
 
     if (draggedDistance < 6) return;
 
-    hasDraggedRef.current = true;
+    if (!hasDraggedRef.current) {
+      hasDraggedRef.current = true;
+      dismissGestureHint();
+    }
 
     const movementX = event.clientX - lastPointerXRef.current;
     const movementY = event.clientY - lastPointerYRef.current;
@@ -222,6 +246,12 @@ function Card({ data }: CardProps) {
         <CardBack data={data} />
         <CardEdges />
       </div>
+      <p
+        className={`gesture-hint ${showGestureHint ? "gesture-hint-visible" : ""}`}
+        aria-hidden={!showGestureHint}
+      >
+        左右にスワイプして裏面を見る
+      </p>
     </section>
   );
 }

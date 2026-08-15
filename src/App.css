@@ -10,6 +10,7 @@
 }
 
 .scene {
+  position: relative;
   width: min(72vw, 320px);
   aspect-ratio: 2 / 3;
   perspective: 1000px;
@@ -51,6 +52,30 @@
 .card:focus-visible {
   outline: 2px solid #d4af65;
   outline-offset: 8px;
+}
+
+.gesture-hint {
+  position: absolute;
+  top: calc(100% + 22px);
+  left: 50%;
+  width: max-content;
+  max-width: 90vw;
+  margin: 0;
+  color: rgb(243 223 163 / 68%);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px);
+  transition:
+    opacity 350ms ease,
+    transform 350ms ease;
+}
+
+.gesture-hint-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 1400ms;
 }
 
 .card-face {
