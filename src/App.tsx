@@ -2,13 +2,16 @@ import "./App.css";
 import { useEffect, useRef } from "react";
 function App() {
   const cardRef = useRef<HTMLDivElement>(null);
-  const rotationRef = useRef(0);
+  const rotationYRef = useRef(0);
+  const rotationXRef = useRef(-8);
   const isDraggingRef = useRef(false);
+  const lastPointerYRef = useRef(0);
   const lastPointerXRef = useRef(0);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = true;
     lastPointerXRef.current = event.clientX;
+    lastPointerYRef.current = event.clientY;
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -16,8 +19,15 @@ function App() {
     if (!isDraggingRef.current) return;
 
     const movementX = event.clientX - lastPointerXRef.current;
-    rotationRef.current += movementX * 0.6;
+    const movementY = event.clientY - lastPointerYRef.current;
+
+    rotationYRef.current += movementX * 0.6;
+    rotationXRef.current -= movementY * 0.4;
+
+    rotationXRef.current = Math.max(-30, Math.min(30, rotationXRef.current));
+
     lastPointerXRef.current = event.clientX;
+    lastPointerYRef.current = event.clientY;
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -34,11 +44,11 @@ function App() {
       previousTime = currentTime;
 
       if (!isDraggingRef.current) {
-        rotationRef.current += deltaTime * 0.02;
+        rotationYRef.current += deltaTime * 0.02;
       }
 
       if (cardRef.current) {
-        cardRef.current.style.transform = `rotateX(-8deg) rotateY(${rotationRef.current}deg)`;
+        cardRef.current.style.transform = `rotateX(${rotationXRef.current}deg) rotateY(${rotationYRef.current}deg)`;
       }
 
       animationFrameId = requestAnimationFrame(animate);
