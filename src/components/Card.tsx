@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import CardBack from "./CardBack";
+import CardEdges from "./CardEdges";
 import CardFront from "./CardFront";
 
 function Card() {
@@ -88,6 +89,7 @@ function Card() {
       >
         <CardFront />
         <CardBack />
+        <CardEdges />
       </div>
     </section>
   );
