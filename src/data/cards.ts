@@ -5,8 +5,8 @@ export const cardData: CardData = {
   serialNumber: 1,
   label: "御褒美",
   title: "集印帳",
-  ownerName: "大切なひと",
-  issuerName: "わたし",
+  ownerName: "トモ",
+  issuerName: "みずき",
   totalStamps: 10,
   stamps: [
     { id: "stamp-001", awardedAt: "2026-08-01T12:00:00+08:00" },
