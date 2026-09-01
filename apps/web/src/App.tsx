@@ -4,7 +4,7 @@ import Card from "./components/Card";
 import CardError from "./components/CardError";
 import CardLoading from "./components/CardLoading";
 import { loadCard } from "./services/loadCard";
-import type { CardData } from "./types/card";
+import type { CardData } from "@good-card/shared";
 
 type CardLoadState =
   | { status: "loading" }

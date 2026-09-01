@@ -1,4 +1,4 @@
-import type { CardData } from "../types/card";
+import type { CardData } from "@good-card/shared";
 
 export const cardData: CardData = {
   id: "card-001",

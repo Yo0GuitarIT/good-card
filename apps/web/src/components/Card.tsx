@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import type { CardData } from "../types/card";
+import type { CardData } from "@good-card/shared";
 import CardBack from "./CardBack";
 import CardEdges from "./CardEdges";
 import CardFront from "./CardFront";

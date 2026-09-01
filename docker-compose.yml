@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: good-card-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: goodcard
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: goodcard
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goodcard -d goodcard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
