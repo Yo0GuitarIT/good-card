@@ -12,8 +12,9 @@
     "preview": "pnpm --filter @good-card/web preview",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "db:reset": "docker compose down -v && docker compose up -d",
-    "db:psql": "docker compose exec db psql -U goodcard -d goodcard"
+    "db:destroy": "docker compose down -v && docker compose up -d",
+    "db:psql": "docker compose exec db psql -U goodcard -d goodcard",
+    "start": "pnpm --filter @good-card/api start"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -24,5 +25,8 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.65.0"
   },
-  "packageManager": "pnpm@11.18.0"
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22"
+  }
 }

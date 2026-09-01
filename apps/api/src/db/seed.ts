@@ -15,7 +15,7 @@ const SEED_STAMPS = [
 async function seed() {
   const existing = await db.select().from(schema.collections).limit(1);
   if (existing.length > 0) {
-    console.log("已經有資料了，略過 seed。要重來請執行 pnpm db:reset。");
+    console.log("已經有資料了，略過 seed。要清空重來請執行 pnpm db:destroy（會刪掉所有資料）。");
     return;
   }
 

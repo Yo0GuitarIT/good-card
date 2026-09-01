@@ -2,10 +2,12 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { sql } from "drizzle-orm";
 import { db } from "./db/client";
-import { env } from "./env";
+import { runMigrations } from "./db/migrate";
 import { scheduleRevokedStampPurge } from "./db/purge";
+import { env } from "./env";
 import { adminRoute } from "./routes/admin";
 import { collectionsRoute } from "./routes/collections";
+import { mountWebApp } from "./static";
 
 const app = new Hono();
 
@@ -22,8 +24,19 @@ app.get("/api/health", async (c) => {
 app.route("/api/collections", collectionsRoute);
 app.route("/api/admin", adminRoute);
 
+// 先把資料表建好再對外服務，也確保清除排程不會在建表前就查詢。
+await runMigrations();
+console.log("migrations up to date");
+
 scheduleRevokedStampPurge();
 
+const servingWeb = mountWebApp(app);
+console.log(
+  servingWeb
+    ? "serving web app from apps/web/dist"
+    : "apps/web/dist not found, serving API only",
+);
+
 serve({ fetch: app.fetch, port: env.port }, (info) => {
-  console.log(`API listening on http://localhost:${info.port}`);
+  console.log(`listening on http://localhost:${info.port}`);
 });
