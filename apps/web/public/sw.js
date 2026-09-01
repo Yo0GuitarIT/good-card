@@ -1,4 +1,4 @@
-const cacheName = "good-card-v1";
+const cacheName = "good-card-v2";
 const appShell = [
   "/",
   "/manifest.webmanifest",
@@ -53,6 +53,10 @@ self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(request.url);
 
   if (requestUrl.origin !== self.location.origin) return;
+
+  // API 一律走網路，也不進快取。
+  // 下面的靜態資源策略是快取優先，集印帳資料若落進去就再也看不到新的章。
+  if (requestUrl.pathname.startsWith("/api/")) return;
 
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
