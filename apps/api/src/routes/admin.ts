@@ -1,6 +1,8 @@
 import { asc, eq } from "drizzle-orm";
 import { Hono } from "hono";
+import type { AdminCollectionResponse } from "@good-card/shared";
 import { db, schema } from "../db/client";
+import { buildCollectionResponse } from "../queries/collection";
 import {
   clearAdminCookie,
   issueAdminCookie,
@@ -28,6 +30,24 @@ adminRoute.post("/logout", (c) => {
 });
 
 adminRoute.get("/me", requireAdmin, (c) => c.json({ role: "issuer" }));
+
+/** 系統固定只有一位授印者、一個收藏，所以不需要用 id 指定。 */
+adminRoute.get("/collection", requireAdmin, async (c) => {
+  const collection = await db.query.collections.findFirst({
+    orderBy: asc(schema.collections.createdAt),
+  });
+
+  if (!collection) {
+    return c.json({ error: "collection_not_found" }, 404);
+  }
+
+  const response: AdminCollectionResponse = {
+    ...(await buildCollectionResponse(collection)),
+    viewToken: collection.viewToken,
+  };
+
+  return c.json(response);
+});
 
 /** 授印：在指定卡片上增加一枚章。 */
 adminRoute.post("/cards/:id/stamps", requireAdmin, async (c) => {

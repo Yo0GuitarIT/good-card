@@ -1,5 +1,10 @@
 const TOKEN_STORAGE_KEY = "good-card:view-token";
 
+/** 授印管理頁的路徑。 */
+export function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname === "/admin/";
+}
+
 /** 從 /card/:token 取出 token；其他路徑回傳 null。 */
 export function readTokenFromPath(pathname: string): string | null {
   const match = /^\/card\/([^/]+)\/?$/.exec(pathname);

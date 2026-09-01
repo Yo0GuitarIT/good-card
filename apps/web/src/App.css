@@ -223,9 +223,12 @@
 .stamp-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  /* minmax(0, 1fr) 讓格子能縮到比內容小；用 1fr 時最小值是 min-content，
+     卡片一縮小格子就會被章的字撐住不肯縮，整排溢出卡片右緣。 */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px 8px;
   margin-top: 28px;
+  container-type: inline-size;
 }
 
 .stamp {
@@ -238,7 +241,9 @@
 
 .stamp span {
   display: block;
-  font-size: clamp(28px, 8vw, 42px);
+  /* 章的大小跟著章格走，不跟視窗走。用 vw 的話卡片與字會各自縮放，
+     卡片一旦不是由視窗寬度決定（例如管理頁）就會對不上。 */
+  font-size: clamp(16px, 14.5cqi, 42px);
   line-height: 1;
 }
 

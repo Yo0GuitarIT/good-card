@@ -25,3 +25,8 @@ export type CollectionResponse = {
   currentCard: CardData | null;
   historyCards: CardData[];
 };
+
+/** GET /api/admin/collection 的回應：多帶查看 token 讓授印者可以複製連結。 */
+export type AdminCollectionResponse = CollectionResponse & {
+  viewToken: string;
+};

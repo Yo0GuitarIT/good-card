@@ -1,0 +1,217 @@
+.admin {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding:
+    max(28px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(40px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 24%, rgb(185 144 67 / 14%), transparent 34%),
+    linear-gradient(145deg, #12110f, #030303);
+  color: #f3dfa3;
+  font-family: "Songti TC", "Noto Serif JP", "PingFang TC", serif;
+}
+
+.admin-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-seal {
+  width: 46px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 3px double #b7352d;
+  color: #d95a4f;
+  font-family: "Yuji Syuku", "Yu Mincho", serif;
+  font-size: 22px;
+  transform: rotate(-4deg);
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+}
+
+.admin-hint {
+  margin: 0;
+  color: rgb(243 223 163 / 62%);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.admin-alert {
+  margin: 0;
+  color: #e08c82;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+/* 登入 */
+
+.admin-login {
+  width: min(100%, 320px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 24px;
+  border: 1px solid rgb(212 175 101 / 30%);
+  border-radius: 18px;
+  background: rgb(10 10 9 / 72%);
+}
+
+.admin-login label {
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  color: rgb(243 223 163 / 76%);
+}
+
+.admin-login input {
+  padding: 10px 12px;
+  border: 1px solid rgb(212 175 101 / 34%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 4%);
+  color: #f3dfa3;
+}
+
+.admin-login button[type="submit"] {
+  margin-top: 4px;
+  padding: 12px 18px;
+  border: 1px solid rgb(212 175 101 / 55%);
+  border-radius: 999px;
+  background: linear-gradient(140deg, rgb(212 175 101 / 22%), rgb(212 175 101 / 8%));
+  color: #f7e9c2;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: filter 160ms ease;
+}
+
+.admin-login button[type="submit"]:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.admin-login input:focus-visible,
+.admin button:focus-visible {
+  outline: 2px solid #d4af65;
+  outline-offset: 3px;
+}
+
+/* 卡片與授印 */
+
+.admin-card {
+  /* .gesture-hint 是 absolute 定位在卡片下方 22px 處，不佔文件流高度，
+     不留空間的話會疊在進度數字上。 */
+  padding-bottom: 44px;
+}
+
+.admin-card .scene {
+  width: min(70vw, calc((100svh - 200px) * 2 / 3), 260px);
+}
+
+.admin-panel {
+  width: min(100%, 320px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-progress {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+}
+
+.admin-award {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid rgb(212 175 101 / 55%);
+  border-radius: 999px;
+  background: linear-gradient(140deg, rgb(212 175 101 / 22%), rgb(212 175 101 / 8%));
+  color: #f7e9c2;
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: filter 160ms ease;
+}
+
+.admin-award:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.admin button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* 連結與其他 */
+
+.admin-meta {
+  width: min(100%, 320px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(212 175 101 / 18%);
+}
+
+.admin-meta h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: rgb(243 223 163 / 62%);
+}
+
+.admin-link {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px dashed rgb(212 175 101 / 28%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 3%);
+  color: rgb(243 223 163 / 82%);
+  font-family: ui-monospace, "SFMono-Regular", monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  word-break: break-all;
+  text-align: center;
+}
+
+.admin-secondary {
+  padding: 8px 16px;
+  border: 1px solid rgb(212 175 101 / 40%);
+  border-radius: 999px;
+  background: rgb(212 175 101 / 6%);
+  color: #f3dfa3;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.admin-logout {
+  margin-top: 4px;
+  border-color: rgb(212 175 101 / 22%);
+  color: rgb(243 223 163 / 58%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-award {
+    transition: none;
+  }
+}
