@@ -204,6 +204,36 @@
   cursor: pointer;
 }
 
+.admin-danger {
+  border-color: rgb(183 53 45 / 45%);
+  color: #e0a49d;
+}
+
+.admin-confirm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgb(183 53 45 / 32%);
+  border-radius: 14px;
+  background: rgb(183 53 45 / 7%);
+}
+
+.admin-confirm p {
+  margin: 0;
+  color: rgb(243 223 163 / 82%);
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.admin-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .admin-logout {
   margin-top: 4px;
   border-color: rgb(212 175 101 / 22%);

@@ -7,13 +7,13 @@ export class UnauthorizedError extends Error {
   }
 }
 
-/** 授印被拒絕，code 例如 card_locked、card_already_complete。 */
-export class AwardStampError extends Error {
+/** 授印或撤回被拒絕，code 例如 card_locked、card_already_complete、no_stamps_to_revoke。 */
+export class StampActionError extends Error {
   code: string;
 
   constructor(code: string) {
     super(code);
-    this.name = "AwardStampError";
+    this.name = "StampActionError";
     this.code = code;
   }
 }
@@ -88,7 +88,24 @@ export async function awardStamp(cardId: string): Promise<CardData> {
   }
 
   if (!response.ok) {
-    throw new AwardStampError(await readErrorCode(response));
+    throw new StampActionError(await readErrorCode(response));
+  }
+
+  return (await response.json()) as CardData;
+}
+
+export async function revokeLastStamp(cardId: string): Promise<CardData> {
+  const response = await fetch(
+    `/api/admin/cards/${encodeURIComponent(cardId)}/stamps/last`,
+    { method: "DELETE", credentials: "same-origin" },
+  );
+
+  if (response.status === 401) {
+    throw new UnauthorizedError();
+  }
+
+  if (!response.ok) {
+    throw new StampActionError(await readErrorCode(response));
   }
 
   return (await response.json()) as CardData;
