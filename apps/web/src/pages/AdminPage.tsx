@@ -9,8 +9,19 @@ import {
   fetchAdminCollection,
   login,
   logout,
+  restoreLastStamp,
   revokeLastStamp,
 } from "../services/admin";
+
+function formatStampTime(isoString: string): string {
+  return new Date(isoString).toLocaleString("zh-TW", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
 
 const sessionKey = ["admin", "session"];
 const collectionKey = ["admin", "collection"];
@@ -25,6 +36,9 @@ function describeStampError(error: Error): string {
     }
     if (error.code === "no_stamps_to_revoke") {
       return "目前沒有可以撤回的章。";
+    }
+    if (error.code === "no_stamp_to_restore") {
+      return "沒有可以復原的章。";
     }
   }
   return "操作失敗，請再試一次。";
@@ -68,6 +82,11 @@ function AdminPage() {
 
   const awardMutation = useMutation({
     mutationFn: awardStamp,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: collectionKey }),
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: restoreLastStamp,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: collectionKey }),
   });
 
@@ -171,7 +190,8 @@ function AdminPage() {
     );
   }
 
-  const { currentCard, viewToken, historyCards } = collectionQuery.data;
+  const { currentCard, viewToken, historyCards, restorableStamp } =
+    collectionQuery.data;
   const viewUrl = `${window.location.origin}/card/${viewToken}`;
   const stampCount = currentCard?.stamps.length ?? 0;
   const isComplete =
@@ -251,10 +271,32 @@ function AdminPage() {
               </button>
             )}
 
-            {(awardMutation.error || revokeMutation.error) && (
+            {restorableStamp && !isConfirmingRevoke && (
+              <div className="admin-restore">
+                <p>
+                  已撤回 {formatStampTime(restorableStamp.awardedAt)} 的一枚章
+                  <br />
+                  <span>保留 30 天，逾期自動刪除</span>
+                </p>
+                <button
+                  type="button"
+                  className="admin-secondary"
+                  onClick={() => restoreMutation.mutate(currentCard.id)}
+                  disabled={restoreMutation.isPending}
+                >
+                  {restoreMutation.isPending ? "復原中…" : "復原這枚章"}
+                </button>
+              </div>
+            )}
+
+            {(awardMutation.error ||
+              revokeMutation.error ||
+              restoreMutation.error) && (
               <p className="admin-alert" role="alert">
                 {describeStampError(
-                  (awardMutation.error ?? revokeMutation.error)!,
+                  (awardMutation.error ??
+                    revokeMutation.error ??
+                    restoreMutation.error)!,
                 )}
               </p>
             )}

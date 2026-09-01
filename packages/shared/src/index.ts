@@ -26,7 +26,11 @@ export type CollectionResponse = {
   historyCards: CardData[];
 };
 
-/** GET /api/admin/collection 的回應：多帶查看 token 讓授印者可以複製連結。 */
+/**
+ * GET /api/admin/collection 的回應。
+ * restorableStamp 是進行中卡片最近一枚被撤回、還在保留期限內的章。
+ */
 export type AdminCollectionResponse = CollectionResponse & {
   viewToken: string;
+  restorableStamp: StampData | null;
 };

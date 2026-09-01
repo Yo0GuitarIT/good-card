@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  index,
   integer,
   pgTable,
   text,
@@ -55,13 +56,28 @@ export const cards = pgTable(
   ],
 );
 
-/** 章數一律由這張表算出來，不另外保存 stampCount，避免資料互相矛盾。 */
-export const stamps = pgTable("stamps", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  cardId: uuid("card_id")
-    .notNull()
-    .references(() => cards.id, { onDelete: "cascade" }),
-  awardedAt: timestamp("awarded_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
+/**
+ * 章數一律由這張表算出來，不另外保存 stampCount，避免資料互相矛盾。
+ *
+ * 撤回是軟刪除：寫入 revokedAt 而不是刪掉整列，這樣可以復原，
+ * 復原後也保有原本的 awardedAt。超過保留期限才由 purgeRevokedStamps 真正刪除。
+ * 所有算章數的地方都必須加上 revokedAt is null。
+ */
+export const stamps = pgTable(
+  "stamps",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    cardId: uuid("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    awardedAt: timestamp("awarded_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("stamps_card_active_idx")
+      .on(table.cardId, table.awardedAt)
+      .where(sql`${table.revokedAt} is null`),
+  ],
+);

@@ -110,3 +110,20 @@ export async function revokeLastStamp(cardId: string): Promise<CardData> {
 
   return (await response.json()) as CardData;
 }
+
+export async function restoreLastStamp(cardId: string): Promise<CardData> {
+  const response = await fetch(
+    `/api/admin/cards/${encodeURIComponent(cardId)}/stamps/restore-last`,
+    { method: "POST", credentials: "same-origin" },
+  );
+
+  if (response.status === 401) {
+    throw new UnauthorizedError();
+  }
+
+  if (!response.ok) {
+    throw new StampActionError(await readErrorCode(response));
+  }
+
+  return (await response.json()) as CardData;
+}

@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import type { CollectionResponse } from "@good-card/shared";
 import { db, schema } from "../db/client";
 import { toCardData } from "../mappers";
@@ -22,7 +22,12 @@ export async function buildCollectionResponse(
     .select()
     .from(schema.stamps)
     .innerJoin(schema.cards, eq(schema.stamps.cardId, schema.cards.id))
-    .where(eq(schema.cards.collectionId, collection.id))
+    .where(
+      and(
+        eq(schema.cards.collectionId, collection.id),
+        isNull(schema.stamps.revokedAt),
+      ),
+    )
     .orderBy(asc(schema.stamps.awardedAt));
 
   const stampsByCard = new Map<string, { id: string; awardedAt: Date }[]>();

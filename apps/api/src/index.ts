@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { sql } from "drizzle-orm";
 import { db } from "./db/client";
 import { env } from "./env";
+import { scheduleRevokedStampPurge } from "./db/purge";
 import { adminRoute } from "./routes/admin";
 import { collectionsRoute } from "./routes/collections";
 
@@ -20,6 +21,8 @@ app.get("/api/health", async (c) => {
 
 app.route("/api/collections", collectionsRoute);
 app.route("/api/admin", adminRoute);
+
+scheduleRevokedStampPurge();
 
 serve({ fetch: app.fetch, port: env.port }, (info) => {
   console.log(`API listening on http://localhost:${info.port}`);
