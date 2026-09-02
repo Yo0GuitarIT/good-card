@@ -1,0 +1,2 @@
+ALTER TABLE "stamps" ADD COLUMN "revoked_at" timestamp with time zone;--> statement-breakpoint
+CREATE INDEX "stamps_card_active_idx" ON "stamps" USING btree ("card_id","awarded_at") WHERE "stamps"."revoked_at" is null;
